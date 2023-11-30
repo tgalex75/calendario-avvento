@@ -1,41 +1,25 @@
-import random from "random";
 import deco from "../assets/img/deco.png";
 import placeholder from "../assets/img/placeholder.jpg";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Layout = () => {
   const [isOpen, setIsOpen] = useState(false);
-  
-  
+
   const arrayRange = (start, stop, step) =>
-  Array.from(
-    { length: (stop - start) / step + 1 },
-    (value, index) => start + index * step
+    Array.from(
+      { length: (stop - start) / step + 1 },
+      (value, index) => start + index * step
     );
-    
-    let arrDataPlayers = arrayRange(1, 24, 1);
-    
-    const data = arrDataPlayers.map((el) => {
-      return { id: el, numero: el };
-    });
-    
-    const randomBgs = [
-      "teal-800",
-      "orange-800",
-      "slate-900",
-      "purple-700",
-      "red-800",
-      "purple-900",
-      "indigo-950",
-    ];
-    
-    //const myDate = new Date()
-    const myDate = 3;
-    const isToday = 3
-    
-    const isOpenable = (idNumero)=> {
-      console.log(myDate >= idNumero ? "Apri!" : "Non ancora!")
-    }
+
+  let arrDataDays = arrayRange(1, 24, 1);
+
+  const data = arrDataDays.map((el) => {
+    return { numero: el };
+  });
+
+  //const myDate = new Date()
+  const myDate = 2;
+  const isToday = myDate == 2
 
   return (
     <main
@@ -50,14 +34,17 @@ const Layout = () => {
       {data.map((el) => {
         return (
           <div
-            key={el.id}
-            className={`bg-transparent border-2 border-dashed rounded-br-3xl w-1/6 flex flex-col items-center text-yellow-500 justify-center text-7xl font-semibold ${(isToday === el.numero) && "border-0"}`}
-            onClick={isOpenable && (() => isOpenable(el.numero))}
+            key={el.numero}
+            className={`bg-black/95 border border-t-0 border-dashed rounded-br-3xl w-1/6 flex flex-col items-center text-yellow-500 justify-center text-7xl font-semibold ${
+              (myDate >= el.numero) && "border-0 border-none"
+            }`}
+            onClick={() => console.log(myDate)}
+            style={(el.numero > myDate) ? { pointerEvents: "none", opacity: 0.4 }:{}}
           >
-            {myDate !== el.numero && !isOpen  ? (
+            {((el.numero > myDate) || isToday == el.numero) && !isOpen ? (
               <strong className="">{el.numero}</strong>
             ) : (
-              (isOpenable && !isOpen) && (
+              !isOpen && (
                 <div
                   className="h-full w-full z-50 flex flex-col items-center justify-end"
                   style={
