@@ -51,8 +51,9 @@ const Layout = () => {
             className={`bg-transparent border-2 border-dashed rounded-br-3xl w-1/6 flex flex-col items-center justify-center text-5xl font-bold`}
             onClick={isOpenable && (()=>console.log("cliccabile ", el.id))}          
           >
-            {myDate <= el.numero && <strong>{el.numero}</strong>}
-            {myDate >= el.numero && <div
+            {myDate !== el.numero ? <strong>{el.numero}</strong>
+            
+            : <div
               className="h-full w-full z-50 flex flex-col items-center justify-around"
               style={!isOpen && {
                 backgroundImage: `url(${placeholder})`,
