@@ -1,9 +1,9 @@
 import deco from "../assets/img/deco.png";
 import placeholder from "../assets/img/placeholder.jpg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Layout = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [dati, setDati] = useState([]);
 
   const arrayRange = (start, stop, step) =>
     Array.from(
@@ -13,13 +13,29 @@ const Layout = () => {
 
   let arrDataDays = arrayRange(1, 24, 1);
 
-  const data = arrDataDays.map((el) => {
-    return { numero: el };
-  });
+  // const data = arrDataDays.map((el) => {
+  //   return { numero: el, isOpen: false };
+  // });
 
-  //const myDate = new Date()
-  const myDate = 2;
-  const isToday = myDate == 2
+  const data = () => {
+    setDati(
+      arrDataDays.map((el) => {
+        return { numero: el, isOpen: false };
+      })
+    );
+  };
+
+  const strappaCasella = (id) => {
+    setDati(dati.map(item => item.numero == id.numero && {...item, isOpen: item.isOpen= true}));
+    console.log(dati)
+  };
+
+  useEffect(() => {
+    data();
+  }, []);
+
+  const newDate = new Date();
+  const myDate = newDate.getDate();
 
   return (
     <main
@@ -31,37 +47,44 @@ const Layout = () => {
         backgroundSize: "cover",
       }}
     >
-      {data.map((el) => {
+      {dati.map((el) => {
         return (
           <div
             key={el.numero}
-            className={`bg-black/95 border border-t-0 border-dashed rounded-br-3xl w-1/6 flex flex-col items-center text-yellow-500 justify-center text-7xl font-semibold ${
-              (myDate >= el.numero) && "border-0 border-none"
-            }`}
-            onClick={() => console.log(myDate)}
-            style={(el.numero > myDate) ? { pointerEvents: "none", opacity: 0.4 }:{}}
+            className={`relative bg-black/95 w-1/6 flex flex-col items-center cursor-pointer text-yellow-500 justify-center font-semibold
+            ${myDate > el.numero && "border-0 border-none"}
+            ${myDate == el.numero && "border-4 border-red-500 "}
+            ${
+              myDate < el.numero &&
+              "border border-t-0 border-dashed rounded-br-3xl pointer-events-none opacity-95"
+            }
+            `}
           >
-            {((el.numero > myDate) || isToday == el.numero) && !isOpen ? (
-              <strong className="">{el.numero}</strong>
-            ) : (
-              !isOpen && (
-                <div
-                  className="h-full w-full z-50 flex flex-col items-center justify-end"
-                  style={
-                    !isOpen && {
+            {!el.isOpen && (
+              <strong
+                className="flex items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full text-center text-7xl z-50"
+                onClick={() => strappaCasella(el.numero)}
+              >
+                {el.numero}
+              </strong>
+            )}
+            <div
+              className="h-full w-full z-40 flex flex-col items-center justify-end"
+              style={
+                el.numero <= myDate && el.isOpen
+                  ? {
                       backgroundImage: `url(${placeholder})`,
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
                       backgroundSize: "cover",
                     }
-                  }
-                >
-                  <strong className="bg-black/75 h-1/4 w-full font-semibold text-sm flex items-center justify-center">
-                    NOME
-                  </strong>
-                </div>
-              )
-            )}
+                  : { display: "none" }
+              }
+            >
+              <strong className="bg-black/75 h-1/4 w-full font-semibold text-sm flex items-center justify-center">
+                NOME
+              </strong>
+            </div>
           </div>
         );
       })}
