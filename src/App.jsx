@@ -39,21 +39,17 @@ const AdventCalendar = () => {
   console.log(days)
 
   return (
-    <div className="max-w-screen-lg mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-4">Calendario dell'Avvento</h1>
-      <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
+    <div className="h-dvh w-screen mx-auto p-2 md:p-4 border border-pink-500">
+      <h1 className="text-xl md:text-3xl font-bold mb-4">Calendario dell'Avvento 2024</h1>
+      <div className="grid h-full grid-cols-4 md:grid-cols-6 gap-4">
         {days.map((day) => (
           <button
-            key={day.id}
-            className="w-full h-full flex justify-center items-center"
+            key={day.id}screen
+            className={`w-full h-full p-2 flex justify-center items-center hover:bg-teal-800`}
             onClick={() => handleDayClick(day)}
           >
             <div
-              className={
-                day.isOpen
-                  ? `bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16`
-                  : "text-2xl font-bold"
-              }
+              className="w-full flex items-center justify-center h-full font-bold text-2xl md:text-4xl"
             >
               {day.day}
             </div>
