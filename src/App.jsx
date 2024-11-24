@@ -1,23 +1,28 @@
-import React, { useState, useEffect } from "react";
-import {db} from "./Data/db";
+import { useState, useEffect } from "react";
+import { db } from "./Data/db";
+//import { useLiveQuery } from "dexie-react-hooks";
 
 const AdventCalendar = () => {
   const [days, setDays] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const giorni = Array.from({ length: 24 }, (_, i) => ({
+    day: i + 1,
+    isOpen: false,
+  }));
+
   const fetchDays = async () => {
-    const days = await db.adventCalendar.toArray();     
-    if (days.length === 0) {
-      for (let i = 1; i <= 24; i++) {
-        await db.adventCalendar.add({ day: i, isOpen: false });
-      }
-      setDays(await db.adventCalendar.toArray());
-    } else {
-      setDays(days);
+    const result = await db.adventCalendar.toArray();
+    if (result.length === 0) {
+      db.adventCalendar.bulkAdd(giorni);
+      setDays(result);
+    }
+    else {
+      setDays(result)
     }
     setLoading(false);
   };
-  
+
   useEffect(() => {
     fetchDays();
   }, []);
@@ -29,8 +34,9 @@ const AdventCalendar = () => {
 
   if (loading) {
     return <div className="text-center mt-10">Caricamento...</div>;
-  }  
-  
+  }
+
+  console.log(days)
 
   return (
     <div className="max-w-screen-lg mx-auto p-4 md:p-6 lg:p-8">
