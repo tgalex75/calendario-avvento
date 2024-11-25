@@ -1,1 +1,43 @@
-Costruisci una Web App relativa ad un Calendario dell'Avvento in GatsbyJS con un database interno basato su IndexedDB e DexieJS che tenga traccia delle caselle aperte con un click. Lo stile deve essere basato su Tailwindcss con una interfaccia responsive di tipo grid da 6 righe per 4 colonne in modalità mobile e 6 colonne per 4 righe in modalità desktop. Le caselle, una volta cliccate devono mostrare delle immagini o dei placeholder di immagine. il codice deve essere Javascript, non TypeScript.
+//Costruisci una Web App relativa ad un Calendario dell'Avvento in GatsbyJS con un database interno basato su IndexedDB e DexieJS che tenga traccia delle caselle aperte con un click. Lo stile deve essere basato su Tailwindcss con una interfaccia responsive di tipo grid da 6 righe per 4 colonne in modalità mobile e 6 colonne per 4 righe in modalità desktop. Le caselle, una volta cliccate devono mostrare delle immagini o dei placeholder di immagine. il codice deve essere Javascript, non TypeScript.
+
+const DaysGrid = () => {
+  const [days, setDays] = useState([]);
+
+  useEffect(() => {
+    const populateDB = async () => {
+      const daysCount = await db.days.count();
+      if (daysCount === 0) {
+        for (let i = 1; i <= 24; i++) {
+          await db.days.add({ day: i, isOpen: false });
+        }
+      }
+      const allDays = await db.days.toArray();
+      setDays(allDays);
+    };
+    populateDB();
+  }, []);
+
+  const handleDayClick = async (id, isOpen) => {
+    await db.days.update(id, { isOpen: !isOpen });
+    const updatedDays = await db.days.toArray();
+    setDays(updatedDays);
+  };
+
+  return (
+    <div className="grid grid-cols-4 gap-4 p-4">
+      {days.map((day) => (
+        <div
+          key={day.id}
+          className={`bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex justify-center items-center cursor-pointer ${
+            day.isOpen ? "bg-green-200" : ""
+          }`}
+          onClick={() => handleDayClick(day.id, day.isOpen)}
+        >
+          {day.day}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default DaysGrid;
